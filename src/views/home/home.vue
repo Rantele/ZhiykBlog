@@ -24,10 +24,10 @@
         </el-col>
         <el-col :span="9" style="display:flex;">
           <div style="line-height:58px;margin-right:24px;">
-            <el-input v-model="searchData" @keyup.enter="handleSearch" size="large" placeholder="🐱‍🏍探索知音库">
+            <el-input v-model="searchData" @keyup.enter="handleSearch" placeholder="🐱‍🏍探索知音库">
               <template #suffix>
                 <el-button link @click="handleSearch">
-                  <el-icon :size="20">
+                  <el-icon :size="16">
                     <Search />
                   </el-icon>
                 </el-button>
