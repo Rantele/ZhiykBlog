@@ -1,18 +1,39 @@
-# Vue 3 + TypeScript + Vite
+# Zhiyk-Blog
 
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=Rantele)](https://github.com/anuraghazra/github-readme-stats)
+<p align='center'>
+<img src="./public/logo1.png"><br/>
+<a href=''><img src="https://img.shields.io/badge/vue-v3.2.37-brightgreen?style=flat&logo=Vue.js"></a>
+<a href=''><img src="https://img.shields.io/badge/vite-v3.1.0-brightgreen?style=flat&logo=Vite"></a>
+<a href=''><img src="https://img.shields.io/badge/typescript-v4.6.4-brightgreen?style=flat&logo=typescript"></a>
+<a href=''><img src="https://img.shields.io/badge/node-v16.16.0-brightgreen?style=flat&logo=Node.js	"></a>
+  <a href=''><img src="https://img.shields.io/badge/npm-v8.12.1-brightgreen?style=flat&logo=npm"></a>
+  <br/>
+  <a href='https://github.com/Rantele/ZhiykBlog/blob/main/README.md'>English</a>
+  ·
+  <a href='https://github.com/Rantele/ZhiykBlog/blob/main/README-cn.md'>简体中文</a>
+</p>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+> This is an independently developed blog system, sever api at [ZhiykBlog-server]()
 
-## Recommended IDE Setup
+## Development
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+> You need to make sure you have `node.js` and need `6.0.0+` version installed
 
-## Type Support For `.vue` Imports in TS
+## Install
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+```sh
+# cd to root of the project
+npm install
+```
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+## Run
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+```sh
+npm run dev
+```
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
+
+Copyright (c) 2022 Rantele
