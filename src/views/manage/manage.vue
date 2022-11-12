@@ -81,6 +81,11 @@ import zhCn from "element-plus/lib/locale/lang/zh-cn";
 
 const router = useRouter();
 const store = useStore();
+
+//侧边导航伸缩
+const isCollapse = ref(false)
+
+//处理菜单导航数据
 const manageMenus = computed<NewMenus>(() => {
   let item = "0";
   for (let index in store.getters.getNewMenus) {
@@ -93,19 +98,9 @@ const manageMenus = computed<NewMenus>(() => {
 
 })
 
-
-const isCollapse = ref(false)
-//侧边导航打开
-const handleOpen = (key: string, keyPath: string[]) => {
-}
-
-// 侧边导航缩小
-const handleClose = (key: string, keyPath: string[]) => {
-}
-
-
+// 返回到首页
 const goBack = () => {
-  router.push('/index');
+  router.push('/');
 }
 
 </script>
