@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-10 21:17:05
+ * @LastEditTime: 2022-11-12 12:10:11
  * @Description:接口统一管理
  *
  */
@@ -55,7 +55,8 @@ export const deleteMdImg = (data: { img: string }): PromiseRes => request.post('
 export const getMdStatistics = (): PromiseRes<MdStatisticsRes> => request.get('/user/md/statistics')
 
 //获取用户全部文章
-export const getUserMdList = (): PromiseRes<MdPostObj[]> => request.get('/user/md/list')
+export const getUserMdList = (data?: { search: string }): PromiseRes<MdPostObj[]> =>
+  request.get('/user/md/list', { params: data })
 
 //获取用户文章内容
 export const getUserMd = (id: string | number): PromiseRes<MdDataObj> => request.get('/user/md/' + id)
