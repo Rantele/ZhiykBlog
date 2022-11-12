@@ -107,7 +107,8 @@ export const createStar = (data: { postid: number }): PromiseRes => request.post
 export const deleteStar = (data: { postid: number }): PromiseRes => request.post('/user/star/delete', data)
 
 //获取用户点赞文章列表
-export const getStarPostList = (): PromiseRes<MdPostObj[]> => request.get('/user/star/postlist')
+export const getStarPostList = (data?: { search: string }): PromiseRes<MdPostObj[]> =>
+  request.get('/user/star/postlist', { params: data })
 
 //获取用户点赞id列表
 export const getUserVoteList = (): PromiseRes<MdVoteOrStarRes[]> => request.get('/user/vote/list')
