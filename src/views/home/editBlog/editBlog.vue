@@ -50,11 +50,10 @@ import { useRouter, useRoute } from 'vue-router';
 import { uploadMdImg, deleteMdImg, createMd, updateMd, getUserMd, getTagList } from '@/request/api'
 import { ElMessage, UploadProps, UploadRawFile, UploadFile, UploadFiles, UploadUserFile, genFileId, FormInstance } from 'element-plus';
 import 'element-plus/es/components/message/style/css'
-import { ca } from 'element-plus/es/locale';
 
 const route = useRoute();
 const router = useRouter();
-// 用户本人的文章数据
+// 用户本人的文章数据 
 
 //存放编辑的文章
 const state = reactive<{
