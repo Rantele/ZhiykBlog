@@ -36,7 +36,6 @@
           </template>
         </template>
       </el-skeleton>
-
     </el-card>
   </div>
   <el-dialog v-model="deleteDialogVisible" title="删除文章" width="30%" :before-close="handleDeleteDialogClose">
@@ -84,8 +83,6 @@ const state = reactive<{
 const { dataList, deleteDialogVisible, deleteData, loading, searchVal } = toRefs(state)
 
 onMounted(async () => {
-  //init->SearchVal
-  // searchVal.value = '';
   await getUserMdList().then((res) => {
     if (res.code === 200) {
       dataList.value = res.data
