@@ -15,7 +15,7 @@
 
 > This is an independently developed blog system, sever api at [ZhiykBlog-server]()
 
-## Development
+## How to use
 
 > You need to make sure you have `node.js` and need `6.0.0+` version installed
 
