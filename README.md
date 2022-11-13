@@ -19,14 +19,14 @@
 
 > You need to make sure you have `node.js` and need `6.0.0+` version installed
 
-## Install
+### Install
 
 ```sh
 # cd to root of the project
 npm install
 ```
 
-## Run
+### Run
 
 ```sh
 npm run dev
