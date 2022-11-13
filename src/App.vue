@@ -10,6 +10,5 @@ import { reactive, toRefs, ref } from 'vue'
 <style lang='less'>
 #app {
   height: 100%;
-
 }
 </style>

@@ -2,13 +2,13 @@
 <template>
   <div class="blog_container">
     <div class="main">
-      <el-row :gutter="24">
-        <el-col :span="18">
-          <el-card class="blog_list">
+      <el-row :gutter="24" justify="center">
+        <el-col :md="18" :xl="20" :sm="22" :xs="22">
+          <el-card class="blog_list" v-infinite-scroll="handleScroll">
             <router-view></router-view>
           </el-card>
         </el-col>
-        <el-col :span="6">
+        <el-col :md="6" class="hidden-sm-and-down">
           <el-affix position="top" :offset="70">
             <el-card class="sidebar">
               <header>
@@ -41,6 +41,7 @@
 import { reactive, toRefs, onMounted, inject, Ref, computed, provide, watch } from 'vue'
 import { getTagList } from '@/request/api'
 import { useRouter } from 'vue-router';
+import 'element-plus/theme-chalk/display.css'
 
 const router = useRouter();
 
@@ -92,6 +93,11 @@ const clickTag = (value: number) => {
       label: value
     }
   })
+}
+
+const handleScroll = () => {
+  console.log('scroll');
+
 }
 
 </script>

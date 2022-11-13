@@ -2,15 +2,86 @@
 <template>
   <el-container direction="vertical" style="height: 100vh">
     <el-header class="navbar">
-      <el-row :gutter="24" justify="space-between">
-        <el-col :span="3">
-          <div class="logo">
+      <el-row :gutter="24" class="hidden-sm-and-up" justify="space-between">
+        <el-col :xs="6" :sm="6">
+          <el-dropdown @command="handleCommand" trigger="click" class="home-dropdown" size="large"
+            style="justify-content:left">
+            <div>
+              <svg t="1668320148755" class="icon" viewBox="0 0 1462 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="2696" width="20" height="20">
+                <path
+                  d="M1389.714286 146.285714H74.517943C37.215086 146.285714 2.896457 115.887543 0.2048 78.555429A73.142857 73.142857 0 0 1 73.142857 0h1315.0208c37.419886 0 71.767771 30.398171 74.430172 67.730286A73.142857 73.142857 0 0 1 1389.714286 146.285714z"
+                  p-id="2697"></path>
+                <path
+                  d="M731.428571 585.142857H74.517943C37.215086 585.142857 2.896457 554.744686 0.2048 517.412571A73.142857 73.142857 0 0 1 73.142857 438.857143h656.735086c37.419886 0 71.738514 30.398171 74.430171 67.701028A73.142857 73.142857 0 0 1 731.428571 585.142857z"
+                  p-id="2698"></path>
+                <path
+                  d="M1389.714286 1024H74.517943C37.215086 1024 2.896457 993.601829 0.2048 956.298971A73.142857 73.142857 0 0 1 73.142857 877.714286h1315.0208c37.419886 0 71.738514 30.398171 74.430172 67.701028A73.142857 73.142857 0 0 1 1389.714286 1024z"
+                  p-id="2699"></path>
+              </svg>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="/">首页</el-dropdown-item>
+                <el-dropdown-item command="/blog">博客</el-dropdown-item>
+                <el-dropdown-item command="/forum">圈子</el-dropdown-item>
+                <el-dropdown-item command="/about">关于</el-dropdown-item>
+                <el-dropdown-item :command="'/' + item.name" v-for="(item, index) in getRouteData.index" :key="index">{{
+                    item.title
+                }}</el-dropdown-item>
+                <el-dropdown-item command="createBlog" divided>写博客</el-dropdown-item>
+
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </el-col>
+        <el-col :xs="12" :sm="12">
+          <div v-if="MobileSearch" style="line-height:58px;">
+            <el-input v-model="searchData" size="large" @keyup.enter="handleMobileSearch" placeholder="🐱‍🏍探索知音库">
+              <template #suffix>
+                <el-button link @click="handleMobileSearch">
+                  <el-icon :size="16">
+                    <Search />
+                  </el-icon>
+                </el-button>
+              </template>
+            </el-input>
+          </div>
+          <div v-else class="logo" @click="goHome">
             <el-image style="width: 48px; height: 100%;" :src="LogoIcon" fit="contain" />
             <span>知音库</span>
           </div>
-
         </el-col>
-        <el-col :span="12">
+        <el-col :xs="6" :sm="6" style="display:flex;justify-content: space-evenly;">
+          <div style="line-height:58px;margin-right:8px;">
+            <el-button link @click="MobileSearch = !MobileSearch">
+              <el-icon :size="20">
+                <Search />
+              </el-icon>
+            </el-button>
+          </div>
+
+          <div v-if="!hasLogin" class="icon-style">
+            <el-avatar :size="32" @click="Login">
+              <IEpUserFilled />
+            </el-avatar>
+          </div>
+          <div v-else class="icon-style">
+            <el-link ref="userLogoRef" href="javascript:;" :underline="false" @click.prevent="userLogo">
+              <el-avatar v-if="!store.state.img" :src="defaultAvatar" :size="32" />
+              <el-avatar v-else :src="'/path/user/avatar/' + store.state.img" :size="32" />
+            </el-link>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24" class="hidden-xs-only" justify="space-between">
+        <el-col :sm="2" :md="4" :lg="3" :xl="3">
+          <div class="logo" @click="goHome">
+            <el-image style="width: 48px; height: 100%;" :src="LogoIcon" fit="contain" />
+            <span class="hidden-sm-and-down">知音库</span>
+          </div>
+        </el-col>
+        <el-col :sm="8" :md="10" :lg="13" :xl="13">
           <el-menu :default-active="$route.path" mode="horizontal" :router="true">
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/blog">博客</el-menu-item>
@@ -22,7 +93,7 @@
             </el-menu-item>
           </el-menu>
         </el-col>
-        <el-col :span="9" style="display:flex;">
+        <el-col :sm="14" :md="10" :lg="8" :xl="8" style="display:flex;justify-content: center;">
           <div style="line-height:58px;margin-right:24px;">
             <el-input v-model="searchData" @keyup.enter="handleSearch" placeholder="🐱‍🏍探索知音库">
               <template #suffix>
@@ -55,7 +126,7 @@
     </el-header>
     <el-container>
       <el-main class="page-component__scroll" style="height: calc(100vh - 59px);">
-        <el-scrollbar class="scroll-item">
+        <el-scrollbar class="scroll-item" style="height: 100%">
           <router-view></router-view>
         </el-scrollbar>
       </el-main>
@@ -144,6 +215,7 @@ import { ElNotification } from 'element-plus'
 import 'element-plus/es/components/notification/style/css'
 import { Edit } from '@element-plus/icons-vue'
 import { getRouteList } from '@/router'
+import 'element-plus/theme-chalk/display.css'
 
 const router = useRouter();
 const userLogoRef = ref()
@@ -165,16 +237,42 @@ const logout = () => {
     showClose: false,
   })
 }
+//点击导航（移动端）
+const handleCommand = (command: string) => {
+  if (command === 'createBlog') {
+    if (!hasLogin.value) {
+      //没有登录弹出登录框
+      dialogFormVisible.value = true
+      console.log('用户未登录');
+
+    } else {
+      //跳转到写文章页面
+      console.log('createBlog');
+      router.push({ name: 'editorBlog', query: { create: 'true' } });
+    }
+  } else {
+    router.push(command)
+  }
+
+}
+
+//点击Logo图标跳转到首页
+const goHome = () => {
+  router.push('/')
+}
+
 
 const state = reactive<{
   dialogFormVisible: boolean;
   searchData: string;
+  MobileSearch: boolean;
 }>({
   dialogFormVisible: false,
-  searchData: ''
+  searchData: '',
+  MobileSearch: false
 })
 
-const { dialogFormVisible, searchData } = toRefs(state);
+const { dialogFormVisible, searchData, MobileSearch } = toRefs(state);
 
 //provide
 provide('toLogin', dialogFormVisible)
@@ -251,6 +349,17 @@ const handleSearch = () => {
   searchData.value = ''
 }
 
+//移动端搜索
+const handleMobileSearch = () => {
+  router.push({
+    name: 'searchBlog',
+    query: {
+      search: searchData.value
+    }
+  })
+  searchData.value = ''
+  MobileSearch.value = false
+}
 
 </script>
 <style lang='less' scoped>
@@ -481,5 +590,16 @@ const handleSearch = () => {
 
 .scroll-item {
   scroll-behavior: smooth;
+}
+
+.home-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  .el-dropdown-link {
+    flex: 1;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="websites">
         <el-row :gutter="24" justify="center" style="margin-left: 0px; margin-right: 0px;">
-            <el-col :span="18">
+            <el-col :xs="22" :sm="20" :md="18" :lg="18" :xl="14">
                 <el-skeleton :loading="loading" animated>
                     <template #template>
                         <el-card class="box-card">
