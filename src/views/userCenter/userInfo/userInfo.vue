@@ -3,11 +3,11 @@
   <div class="wrap">
     <el-card class="box-card">
       <el-row :gutter="24">
-        <el-col :span="2">
-          <el-avatar :size="92" v-if="!userData.img" :src="defaultAvatar" />
-          <el-avatar :size="92" v-else :src="'/path/user/avatar/'+userData.img" />
+        <el-col :xs="10" :sm="4" style="max-width:110px">
+          <img class="avatar-img" v-if="!userData.img" :src="defaultAvatar" />
+          <img class="avatar-img" v-else :src="'/path/user/avatar/' + userData.img" />
         </el-col>
-        <el-col :span="16">
+        <el-col :xs="14" :sm="12">
           <div class="username" style="font-size: 1.2rem;font-weight: 500;line-height: 40px;">
             {{ userData.nickname }}
           </div>
@@ -36,7 +36,7 @@
             </el-tag>
           </div>
         </el-col>
-        <el-col :span="6"></el-col>
+        <el-col class="hidden-xs-only" :sm="4"></el-col>
       </el-row>
     </el-card>
     <el-card class="box-card">
@@ -47,10 +47,10 @@
       </template>
       <div>
         <el-form label-position="right" label-width="100px">
-          <template v-for="(value,key, index) in mapData">
+          <template v-for="(value, key, index) in mapData">
             <el-form-item :label="value">
               <SwitchEditStatus ref="sesRefs" :editShow="unEdit.includes(key as string) ? false : true"
-                :hidden="key === 'password'" :validatorRules="userEditRules[key]? userEditRules[key] : null"
+                :hidden="key === 'password'" :validatorRules="userEditRules[key] ? userEditRules[key] : null"
                 :value="userData[key] ? userData[key] : ''" />
               <!-- @submit="updateUserInfo($event, key, index)" -->
             </el-form-item>
@@ -77,8 +77,8 @@ import { getUserInfo } from '@/request/api'
 import { useStore } from 'vuex';
 import defaultAvatar from '@/assets/defaultAvatar.png'
 import SwitchEditStatus from './components/SwitchEditStatus.vue'
-import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import 'element-plus/theme-chalk/display.css'
+
 const store = useStore();
 const unEdit = ['create_time'];
 
@@ -232,9 +232,9 @@ const getCreateAge = computed(() => {
 
 </script>
 <style lang='less' scoped>
-.wrap {
-  padding: 0px 20px;
-}
+// .wrap {
+//   padding: 0px 20px;
+// }
 
 .box-card {
   margin-bottom: 16px;
@@ -256,5 +256,13 @@ const getCreateAge = computed(() => {
 .username {
   position: relative;
 
+}
+
+.avatar-img {
+  // width: 100%;
+  // flex: 1;
+  // justify-content: center;
+  // align-items: center;
+  max-width: 97px;
 }
 </style>

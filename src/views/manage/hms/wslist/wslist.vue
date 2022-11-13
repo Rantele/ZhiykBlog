@@ -4,7 +4,7 @@
     <el-card class="card">
       <div class="header">
         <span><strong>网站类别</strong></span>
-        <el-button class="button" size="small" @click="handleEdit(0,{})">
+        <el-button class="button" size="small" @click="handleEdit(0, {})">
           <IEpPlus />
         </el-button>
       </div>
@@ -12,21 +12,23 @@
         <el-table ref="wsItemRef" :data="WSCategory" empty-text="暂无数据">
           <el-table-column prop="title" label="类别">
             <template #default="scope">
-              <el-tag :type="filterWSCategory.filter(e=>e.value===scope.row.id)[0].type">
-                {{scope.row.title}}
+              <el-tag :type="filterWSCategory.filter(e => e.value === scope.row.id)[0].type">
+                {{ scope.row.title }}
               </el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="icon" label="图标">
             <template #default="scope">
-              <img :src="'/path/index/websites/img/'+scope.row.icon" width="28" height="28" />
+              <img :src="'/path/index/websites/img/' + scope.row.icon" width="28" height="28" />
             </template>
           </el-table-column>
           <el-table-column prop="name" label="名称" />
           <el-table-column align="center" label="操作" fixed="right">
-            <template #default="{row}">
-              <el-button size="small" type="primary" @click="handleEdit(0,row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <template #default="{ row }">
+              <div class="handle-box">
+                <el-button size="small" type="primary" @click="handleEdit(0, row)">编辑</el-button>
+                <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -38,7 +40,7 @@
     <el-card class="card">
       <div class="header">
         <span><strong>网站列表</strong></span>
-        <el-button class="button" size="small" @click="handleEdit(1,{})">
+        <el-button class="button" size="small" @click="handleEdit(1, {})">
           <IEpPlus />
         </el-button>
       </div>
@@ -47,7 +49,7 @@
           <el-table-column prop="title" label="标题" />
           <el-table-column prop="icon" label="图标">
             <template #default="scope">
-              <img :src="'/path/index/websites/img/'+scope.row.icon" width="28" height="28" />
+              <img :src="'/path/index/websites/img/' + scope.row.icon" width="28" height="28" />
             </template>
           </el-table-column>
           <el-table-column prop="name" label="名称" />
@@ -56,15 +58,17 @@
           <el-table-column prop="parentId" label="类别" :filters="filterWSCategory" :filter-method="filterTag"
             filter-placement="bottom-end">
             <template #default="scope">
-              <el-tag :type="filterWSCategory.filter(e=>e.value===scope.row.parentId)[0].type">
-                {{filterWSCategory.filter(e=>e.value===scope.row.parentId)[0].text}}
+              <el-tag :type="filterWSCategory.filter(e => e.value === scope.row.parentId)[0].type">
+                {{ filterWSCategory.filter(e => e.value === scope.row.parentId)[0].text }}
               </el-tag>
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作" fixed="right">
-            <template #default="{row}">
-              <el-button size="small" type="primary" @click="handleEdit(1, row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <template #default="{ row }">
+              <div class="handle-box">
+                <el-button size="small" type="primary" @click="handleEdit(1, row)">编辑</el-button>
+                <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -206,6 +210,19 @@ const closeDeleteDialog = (reload: any) => {
 
   .text {
     font-size: 14px;
+  }
+}
+
+.handle-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 6px;
+  column-gap: 6px;
+
+  .el-button {
+    margin-left: 0 !important;
   }
 }
 

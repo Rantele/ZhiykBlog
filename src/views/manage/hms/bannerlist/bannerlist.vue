@@ -20,7 +20,9 @@
         </strong></span>
     </div>
     <div class="text" style="height:600px;">
-      <BannerWaterFall :data="bannerWaterFall" @closeDeleteDialog="closeDeleteDialog" />
+      <el-scrollbar style="height: 100%;">
+        <BannerWaterFall :data="bannerWaterFall" @closeDeleteDialog="closeDeleteDialog" />
+      </el-scrollbar>
     </div>
   </el-card>
 
@@ -89,6 +91,7 @@ const closeDeleteDialog = (reload: any) => {
 <style lang='less' scoped>
 .BannerFall {
   margin: 18px 0;
+
 
   .header {
     display: flex;

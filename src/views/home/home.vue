@@ -21,17 +21,18 @@
               </svg>
             </div>
             <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="/">首页</el-dropdown-item>
-                <el-dropdown-item command="/blog">博客</el-dropdown-item>
-                <el-dropdown-item command="/forum">圈子</el-dropdown-item>
-                <el-dropdown-item command="/about">关于</el-dropdown-item>
-                <el-dropdown-item :command="'/' + item.name" v-for="(item, index) in getRouteData.index" :key="index">{{
+              <el-menu :default-active="$route.path" router>
+                <el-menu-item index="/">首页</el-menu-item>
+                <el-menu-item index="/blog">博客</el-menu-item>
+                <el-menu-item index="/forum">圈子</el-menu-item>
+                <el-menu-item index="/about">关于</el-menu-item>
+                <el-menu-item v-for="(item, index) in getRouteData.index" :index="'/' + item.name" :key="index">{{
                     item.title
-                }}</el-dropdown-item>
-                <el-dropdown-item command="createBlog" divided>写博客</el-dropdown-item>
+                }}
+                </el-menu-item>
+                <el-menu-item index @click="createBlog">写博客</el-menu-item>
+              </el-menu>
 
-              </el-dropdown-menu>
             </template>
           </el-dropdown>
         </el-col>
@@ -82,7 +83,7 @@
           </div>
         </el-col>
         <el-col :sm="8" :md="10" :lg="13" :xl="13">
-          <el-menu :default-active="$route.path" mode="horizontal" :router="true">
+          <el-menu :default-active="$route.path" mode="horizontal" router>
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/blog">博客</el-menu-item>
             <el-menu-item index="/forum">圈子</el-menu-item>
@@ -290,7 +291,9 @@ const getRouteData = computed(() => {
 })
 
 //点击写文章按钮
-const createBlog = () => {
+const createBlog = (e: any) => {
+  console.log(e);
+
   if (!hasLogin.value) {
     //没有登录弹出登录框
     dialogFormVisible.value = true

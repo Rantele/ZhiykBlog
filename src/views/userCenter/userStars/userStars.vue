@@ -4,7 +4,8 @@
     <el-card>
       <template #header>
         <div class="header">
-          <span>收藏列表({{ starDataList.length }})</span>
+          <span>收藏列表
+            <span class="hidden-xs-only">({{ starDataList.length }})</span></span>
           <el-input class="search" v-model="searchVal" placeholder="请输入标题关键字" @keyup.enter="handleSearch">
             <template #suffix>
               <el-button link @click="handleSearch">
@@ -166,7 +167,6 @@ const handleSearch = async () => {
 <style lang='less' scoped>
 .blog-container {
   height: 100%;
-  padding: 0px 20px;
 
   .header {
     display: flex;
@@ -174,7 +174,7 @@ const handleSearch = async () => {
     align-items: center;
 
     .search {
-      width: 240px;
+      max-width: 240px;
       height: 32px;
       margin-right: 20px;
     }

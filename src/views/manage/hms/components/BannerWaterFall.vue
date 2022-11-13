@@ -1,13 +1,20 @@
 <!--  -->
 <template>
-  <el-scrollbar>
-    <div class="masonry" @click="clickDeleteIcon">
-      <template v-for="(banner, index) in BannerArr" :key="index">
-        <el-image class="masonry_item" :src="banner.src" @click.stop="viewImg(index)" :_index="index">
-        </el-image>
-      </template>
-    </div>
-  </el-scrollbar>
+  <div class="wrap">
+    <el-row :gutter="24">
+      <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" v-for="(banner, index) in data" :key="index"
+        style="padding:0px">
+        <el-card class="masonry" @click="clickDeleteIcon">
+          <img class="masonry_item" :src="'/path/index/banners/img/' + banner.img" @click.stop="viewImg(index)"
+            :_index="index" />
+        </el-card>
+
+      </el-col>
+    </el-row>
+  </div>
+
+
+
   <el-image-viewer v-if="ImageViewerVisible" @close="closeViewer" :url-list="[imgUrl]" hide-on-click-modal />
 
   <el-dialog v-model="deleteDialogVisible" title="删除确认框" width="30%" :before-close="closeDialogVisible">
@@ -24,9 +31,10 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, computed } from 'vue'
+import { reactive, toRefs, ref, computed, watch, onMounted } from 'vue'
 import { ElImage } from 'element-plus';
 import { deleteBanner } from '@/request/api'
+import store from '@/store';
 const props = defineProps<{ data: BannerObj[] }>()
 
 const state = reactive<{
@@ -37,7 +45,7 @@ const state = reactive<{
   deleteData: {
     id: number;
     img: string;
-  }
+  };
 }>({
   deleteDialogVisible: false,
   ImageViewerVisible: false,
@@ -46,7 +54,7 @@ const state = reactive<{
   deleteData: {
     id: -1,
     img: '',
-  }
+  },
 })
 
 const { deleteDialogVisible, ImageViewerVisible, srcList, imgUrl, deleteData } = toRefs(state);
@@ -56,18 +64,8 @@ const emit = defineEmits<{
   (event: 'closeDeleteDialog', reload?: number): void
 }>()
 
-//ref数组
-const BannerArr = computed(() => {
-  srcList.value = []
-  let banners: HTMLImageElement[] = [];
-  for (let i = 0; i < props.data.length; i++) {
-    const newImg = new Image()
-    newImg.src = 'http://localhost:3000/index/banners/img/' + props.data[i].img
-    banners.push(newImg)
-    srcList.value.push(newImg.src)
-  }
-  return banners
-})
+
+
 
 //点击全屏预览图片
 function viewImg(index: number) {
@@ -114,39 +112,37 @@ const modify = () => {
 
 </script>
 <style lang='less' scoped>
+:deep(.el-card__body) {
+  padding: 0px;
+}
+
+.wrap {
+  padding: 0 12px;
+}
+
 .masonry {
-  padding: 0 10px 0 0;
-  column-count: 3;
-  column-gap: 1;
   position: relative;
+  margin: 10px 10px;
+
 
   .masonry_item {
-    margin-top: 10px;
-    counter-increment: item-counter;
-
-    img {
-      position: relative;
-      display: block;
-      height: auto;
-      width: 100%;
-    }
+    width: 100%;
   }
+}
 
-  .masonry_item:hover::after {
-    position: absolute;
-    display: block;
-    top: 0px;
-    right: 0px;
-    content: 'x';
-    line-height: 32px;
-    text-align: center;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-
-  }
+.masonry:hover::after {
+  position: absolute;
+  display: block;
+  top: 0px;
+  right: 0px;
+  content: 'x';
+  line-height: 32px;
+  text-align: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
 
 }
 </style>

@@ -144,7 +144,6 @@ const handleSearch = async () => {
 <style lang='less' scoped>
 .blog-container {
   height: 100%;
-  padding: 0px 20px;
 
   .header {
     display: flex;
