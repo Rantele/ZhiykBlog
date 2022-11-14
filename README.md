@@ -1,7 +1,7 @@
 # Zhiyk-Blog
 
 <p align='center'>
-  <img src="./public/logo1.png"><br/>
+  <img src="./public/logo+.png"><br/>
   <a href='https://vuejs.org/' target='_blank'><img src="https://img.shields.io/badge/vue-v3.2.37-brightgreen?style=flat&logo=Vue.js"></a>
   <a href='https://vitejs.dev/' target='_blank'><img src="https://img.shields.io/badge/vite-v3.1.0-brightgreen?style=flat&logo=Vite"></a>
   <a href='https://www.typescriptlang.org/' target='_blank'><img src="https://img.shields.io/badge/typescript-v4.6.4-brightgreen?style=flat&logo=typescript"></a>
