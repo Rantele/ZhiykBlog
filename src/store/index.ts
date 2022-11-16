@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-13 13:00:56
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-09 13:57:02
+ * @LastEditTime: 2022-11-15 21:34:01
  * @Description:Vux状态统一管理
  *
  */
@@ -12,6 +12,7 @@ import { App } from 'vue'
 import { getUserRouterApi, getWSList, getBannerList, getMdStatistics } from '../request/api'
 import Cookies from 'js-cookie'
 import convertToTreeData from '@/utils/convertToTreeData'
+import { EventSourcePolyfill } from 'event-source-polyfill'
 
 const store = createStore<State>({
   state() {

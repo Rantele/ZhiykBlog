@@ -13,6 +13,7 @@
     "@iconify-json/ep": "^1.1.8",
     "@types/js-cookie": "^3.0.2",
     "axios": "^1.1.2",
+    "echarts": "^5.4.0",
     "element-plus": "^2.2.18",
     "js-cookie": "^3.0.1",
     "less": "^4.1.3",

@@ -107,7 +107,10 @@
             </el-input>
           </div>
           <div style="line-height:58px;margin-right:16px;">
-            <el-button type="primary" :icon="Edit" round @click="createBlog">
+            <el-button type="primary" round @click="createBlog">
+              <el-icon>
+                <Edit />
+              </el-icon>
               <span>写文章</span>
             </el-button>
           </div>
@@ -214,7 +217,6 @@ import defaultAvatar from '@/assets/defaultAvatar.png'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import 'element-plus/es/components/notification/style/css'
-import { Edit } from '@element-plus/icons-vue'
 import { getRouteList } from '@/router'
 import 'element-plus/theme-chalk/display.css'
 
@@ -234,7 +236,7 @@ const logout = () => {
   ElNotification.success({
     title: '期望下次的相见👋',
     offset: 50,
-    duration: 2500,
+    duration: 1500,
     showClose: false,
   })
 }
@@ -329,7 +331,7 @@ const closeLoginDialog = (reload: any) => {
           title: '好久不见👋',
           message: '欢迎你，' + res.nickname,
           offset: 50,
-          duration: 2000,
+          duration: 1500,
           showClose: false,
         })
         // router.go(0)

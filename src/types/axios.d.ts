@@ -123,3 +123,7 @@ interface MdDetailDataRes {
   }
   isVote: number
 }
+
+interface byLabelMdData extends MdPostObj {
+  date?: string
+}

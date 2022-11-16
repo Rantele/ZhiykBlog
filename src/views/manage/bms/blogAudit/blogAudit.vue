@@ -1,11 +1,10 @@
 <!--  -->
 <template>
-  <div>message</div>
+  <div>blogAudit</div>
 </template>
 
 <script lang='ts' setup>
 import { reactive, toRefs, ref } from 'vue'
-
 
 </script>
 <style lang='less' scoped>
