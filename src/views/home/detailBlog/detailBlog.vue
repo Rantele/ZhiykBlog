@@ -2,7 +2,12 @@
 <template>
   <div class="wrapper">
     <div class="detail_container" style="max-width:1140px;">
-      <div class="view">
+      <div v-if="!detailData?.body" class="view">
+        <el-card>
+          <el-empty description="文章不存在" />
+        </el-card>
+      </div>
+      <div v-else class="view">
         <el-card class="main-card">
           <div class="user-detail">
             <h1 class="article-title">{{ detailData.blogData.title }}</h1>
@@ -134,7 +139,9 @@ onMounted(() => {
   if (route.params.id && route.query.postid) {
     getMdDetail({ postid: parseInt(route.query.postid as string), blogid: parseInt(route.params.id as string) }).then(res => {
       if (res.code === 200) {
-        detailData.value = res.data
+        if (res.data) {
+          detailData.value = res.data
+        }
       }
     }).catch(err => {
       console.log('[catch]:', err);
