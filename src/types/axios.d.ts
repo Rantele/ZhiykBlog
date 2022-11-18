@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 19:34:57
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-13 11:58:18
+ * @LastEditTime: 2022-11-18 12:58:49
  * @Description:axios.ts全局变量
  *
  */
@@ -126,4 +126,13 @@ interface MdDetailDataRes {
 
 interface byLabelMdData extends MdPostObj {
   date?: string
+}
+
+interface overviewData {
+  total?: number
+  examine?: number
+  failed?: number
+  td_add?: number
+  compelete_rate?: number
+  pass_rate?: number
 }

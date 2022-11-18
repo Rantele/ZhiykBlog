@@ -20,25 +20,25 @@
               <el-col class="card-item" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-card>
                   <div class="title">今日新增文章数量</div>
-                  <div class="content" style="color: #3498db;">60</div>
+                  <div class="content" style="color: #3498db;">{{ overviewData.td_add }}</div>
                 </el-card>
               </el-col>
               <el-col class="card-item" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-card>
                   <div class="title">文章总数量</div>
-                  <div class="content" style="color: #2ecc71;">160</div>
+                  <div class="content" style="color: #2ecc71;">{{ overviewData.total }}</div>
                 </el-card>
               </el-col>
               <el-col class="card-item" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-card>
                   <div class="title">待审核文章数量</div>
-                  <div class="content" style="color: #e67e22;">12</div>
+                  <div class="content" style="color: #e67e22;">{{ overviewData.examine }}</div>
                 </el-card>
               </el-col>
               <el-col class="card-item" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-card>
                   <div class="title">未通过文章数量</div>
-                  <div class="content" style="color: #c0392b;">5</div>
+                  <div class="content" style="color: #c0392b;">{{ overviewData.failed }}</div>
                 </el-card>
               </el-col>
             </el-row>
@@ -68,7 +68,7 @@
             <div class="bar" style="height: 400px">
               <el-scrollbar style="height: 100%;">
                 <el-table :data="byLabelMdData" stripe style="width: 100%">
-                  <el-table-column prop="id" label="ID" width="80" />
+                  <el-table-column prop="id" label="编号" width="80" />
                   <el-table-column prop="title" label="标题" />
                   <el-table-column prop="nickname" label="作者" />
                   <el-table-column prop="create_time" label="创建时间" />
@@ -92,7 +92,7 @@
 import { reactive, toRefs, ref, computed, onMounted, watch } from 'vue'
 import Pie from '../components/Pie.vue'
 import Bar from '../components/Bar.vue'
-import { getBlogStatistics, getTagList, getBlogFilterStatistics } from '@/request/api'
+import { getBlogStatistics, getTagList, getBlogFilterStatistics, getBlogOverviewData } from '@/request/api'
 
 // state
 const state = reactive<{
@@ -101,6 +101,7 @@ const state = reactive<{
   calendarData: string[];
   byLabelMdData: byLabelMdData[];
   label: number;
+  overviewData: overviewData;
 }>({
   data: [],
   show: false,
@@ -109,9 +110,10 @@ const state = reactive<{
     `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()} 23:59:59`
   ],
   byLabelMdData: [],
-  label: 19
+  label: 19,
+  overviewData: {}
 })
-const { data, show, calendarData, byLabelMdData, label } = toRefs(state);
+const { data, show, calendarData, byLabelMdData, label, overviewData } = toRefs(state);
 
 //watch
 watch(label, () => {
@@ -212,10 +214,21 @@ const calendarChange = () => {
 
 const labelList = ref<TagListItem[]>()
 onMounted(() => {
+  //获取文本全部标签
   getTagList().then(res => {
     if (res.code === 200) {
       labelList.value = res.data
     }
+  }).catch(err => {
+    console.log('[catch]:', err);
+  })
+  //获取概况信息
+  getBlogOverviewData().then(res => {
+    if (res.code === 200) {
+      overviewData.value = res.data
+    }
+  }).catch(err => {
+    console.log('[catch]:', err);
   })
 })
 

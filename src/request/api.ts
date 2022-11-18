@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-16 19:23:11
+ * @LastEditTime: 2022-11-18 12:58:13
  * @Description:接口统一管理
  *
  */
@@ -130,3 +130,9 @@ export const getBlogStatistics = (data: { startDate: string; endDate: string }):
 //根据标签获取博客统计信息
 export const getBlogFilterStatistics = (data: { label: number }): PromiseRes<byLabelMdData[]> =>
   request.get('/blog/filterstatistics', { params: data })
+
+//获取博客概述信息
+export const getBlogOverviewData = (): PromiseRes<overviewData> => request.get('/blog/overviewData')
+
+//获取博客审核概述信息
+export const getBlogAuditOverviewData = (): PromiseRes<overviewData> => request.get('/blog/auditOverviewData')
