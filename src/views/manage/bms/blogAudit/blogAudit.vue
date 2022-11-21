@@ -5,14 +5,14 @@
       <el-col :span="16" :class="{ 'loaded': loaded }">
         <el-card class="audit-container stamp" :data-content="auditCheckStatus.content"
           :style="{ '--data-color': auditCheckStatus.color }">
-          <template v-if="overviewData.examine === 0">
+          <template v-if="overviewData.examine === 0 && auditMdListData">
             <span class="header">审核文章</span>
             <el-result class="empty-content" icon="success" title="全部审核完毕" sub-title="辛苦你啦，年底给你加薪哦🤞">
             </el-result>
           </template>
           <el-descriptions class="audit-content" v-else title="审核文章" :column="3" border>
             <template #extra>
-              <el-button type="primary">Operation</el-button>
+              <el-button type="primary">操作</el-button>
             </template>
             <el-descriptions-item>
               <template #label>
@@ -23,7 +23,8 @@
                   用户名
                 </div>
               </template>
-              kooriookami
+              <span v-if="currentBlog.header">{{ currentBlog.header.nickname }}</span>
+
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -34,7 +35,8 @@
                   创建时间
                 </div>
               </template>
-              2022-11-30
+              <span v-if="currentBlog.header">{{ currentBlog.header.create_time }}</span>
+
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -59,10 +61,14 @@
                   文章标题
                 </div>
               </template>
-              No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
+              <span v-if="currentBlog.header">{{ currentBlog.header.title }}</span>
             </el-descriptions-item>
           </el-descriptions>
-          <div class=""></div>
+          <div class="">
+            <mavon-editor ref="detailRef" :editable="false" defaultOpen="preview" :toolbarsFlag="false"
+              :subfield="false" class="mavon_editor" previewBackground="#fff" :boxShadow="false"
+              v-model="currentBlog.body" :ishljs="true" />
+          </div>
         </el-card>
       </el-col>
       <el-col :span="8">
@@ -79,7 +85,8 @@
           </div>
           <el-row class="audit-over-content" :gutter="24" justify="space-around">
             <el-col :span="12">
-              <el-progress type="dashboard" :percentage="(overviewData.compelete_rate as number) * 100">
+              <el-progress v-if="overviewData.compelete_rate" type="dashboard"
+                :percentage="(overviewData.compelete_rate as number) * 100">
                 <template #default="{ percentage }">
                   <span class="percentage-value">{{ percentage }}%</span>
                   <span class="percentage-label">审核完成度</span>
@@ -87,7 +94,8 @@
               </el-progress>
             </el-col>
             <el-col :span="12">
-              <el-progress type="dashboard" :percentage="(overviewData.pass_rate as number) * 100" status="success">
+              <el-progress v-if="overviewData.pass_rate" type="dashboard"
+                :percentage="(overviewData.pass_rate as number) * 100" status="success">
                 <template #default="{ percentage }">
                   <span class="percentage-value">{{ percentage }}%</span>
                   <span class="percentage-label">审核通过率</span>
@@ -136,11 +144,10 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, onMounted, computed } from 'vue'
-import { getBlogAuditOverviewData } from '@/request/api'
+import { reactive, toRefs, ref, onMounted, watch } from 'vue'
+import { getBlogAuditOverviewData, getAuditMdDataList, getMdContent } from '@/request/api'
 import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
-
 
 const state = reactive<{
   overviewData: overviewData;
@@ -149,15 +156,38 @@ const state = reactive<{
     content: string;
     color: string;
   }
+  auditMdListData: MdPostObj[];
+  currentBlog: {
+    id: number;
+    body: string;
+    header: MdPostObj
+  };
 }>({
   overviewData: {},
   auditCheckStatus: {
     status: -1,
     content: '',
     color: ''
+  },
+  auditMdListData: [],
+  currentBlog: {
+    id: -1,
+    body: '',
+    header: {}
   }
 })
-const { overviewData, auditCheckStatus } = toRefs(state)
+const { overviewData, auditCheckStatus, auditMdListData, currentBlog } = toRefs(state)
+
+watch(() => currentBlog.value.id, () => {
+  if (currentBlog.value.id > 0) {
+    getMdContent(currentBlog.value.id).then(res => {
+      currentBlog.value.body = res.data.body
+      currentBlog.value.header = auditMdListData.value[currentBlog.value.id]
+    }).catch(err => {
+      console.log('[catch]:', err);
+    })
+  }
+})
 
 onMounted(() => {
   //获取概况信息
@@ -168,7 +198,21 @@ onMounted(() => {
   }).catch(err => {
     console.log('[catch]:', err);
   })
+  //获取待审核文章列表
+  getAuditMdDataList().then(res => {
+    if (res.code === 200) {
+      auditMdListData.value = res.data
+      if (res.data.length > 0) {
+        currentBlog.value.id = res.data[0].blogid as number
+        currentBlog.value.header = res.data[0]
+      }
+    }
+  }).catch(err => {
+    console.log('[catch]:', err);
+  })
 })
+
+
 
 const loaded = ref<boolean>(false)
 
@@ -479,13 +523,14 @@ const handleAuditBack = () => {
     position: absolute;
     padding: 10px 15px;
     margin: 0 auto;
-    bottom: 15%;
+    bottom: 5%;
     right: 15%;
     text-transform: uppercase;
     opacity: 0;
     transform-origin: 50% 50%;
     transform: rotate(-15deg) scale(5);
     transition: all .3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    z-index: 2000;
   }
 }
 

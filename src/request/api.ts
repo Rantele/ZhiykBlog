@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-18 12:58:13
+ * @LastEditTime: 2022-11-21 14:24:03
  * @Description:接口统一管理
  *
  */
@@ -136,3 +136,5 @@ export const getBlogOverviewData = (): PromiseRes<overviewData> => request.get('
 
 //获取博客审核概述信息
 export const getBlogAuditOverviewData = (): PromiseRes<overviewData> => request.get('/blog/auditOverviewData')
+//获取博客审核概述信息
+export const getAuditMdDataList = (): PromiseRes<MdPostObj[]> => request.get('/blog/auditMdDataList')
