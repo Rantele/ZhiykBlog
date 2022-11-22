@@ -96,7 +96,7 @@
           </el-scrollbar>
         </el-aside>
         <el-main class="page-component__scroll">
-          <el-scrollbar>
+          <el-scrollbar ref="mainScrollbarRef">
             <div class="main-wrap">
               <el-config-provider :locale="zhCn">
                 <router-view></router-view>
@@ -111,7 +111,7 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, computed } from 'vue'
+import { reactive, toRefs, ref, computed, provide } from 'vue'
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router"
 // 导入 Element Plus 语言包
@@ -142,6 +142,13 @@ const manageMenus = computed<NewMenus>(() => {
 const goBack = () => {
   router.push('/');
 }
+
+const mainScrollbarRef = ref()
+const setScrollTop = (scrollTop: number) => {
+  mainScrollbarRef.value!.setScrollTop(scrollTop)
+}
+//provide
+provide('setScrollTop', setScrollTop)
 
 </script>
 <style lang='less' scoped>
