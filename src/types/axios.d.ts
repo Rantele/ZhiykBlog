@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 19:34:57
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-18 12:58:49
+ * @LastEditTime: 2022-11-22 20:46:18
  * @Description:axios.ts全局变量
  *
  */
@@ -85,6 +85,7 @@ interface MdPostObj {
   img?: string
   vote_count?: number
   comment_count?: number
+  status?: number
   create_time?: string
 }
 //文章标签
