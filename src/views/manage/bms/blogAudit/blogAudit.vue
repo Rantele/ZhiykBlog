@@ -1,14 +1,12 @@
 <!--  -->
 <template>
-  <div class="affix-container">
+  <div class="affix-container" ref="auditRef">
     <el-row :gutter="24">
       <el-col :span="16" :class="{ 'loaded': loaded }">
         <el-card class="audit-container stamp" :data-content="auditCheckStatus.content"
           :style="{ '--data-color': auditCheckStatus.color }">
-          <template v-if="overviewData.examine === 0 && auditMdListData">
+          <template v-if="overviewData.examine === 0">
             <span class="header">审核文章</span>
-            <el-result class="empty-content" icon="success" title="全部审核完毕" sub-title="辛苦你啦，年底给你加薪哦🤞">
-            </el-result>
           </template>
           <el-descriptions class="audit-content" v-else title="审核文章" :column="3" border>
             <template #extra>
@@ -23,7 +21,7 @@
                   用户名
                 </div>
               </template>
-              <span v-if="currentBlog.header">{{ currentBlog.header.nickname }}</span>
+              <span v-if="auditMdListData[currentBlog.index]">{{ auditMdListData[currentBlog.index].nickname }}</span>
 
             </el-descriptions-item>
             <el-descriptions-item>
@@ -35,7 +33,8 @@
                   创建时间
                 </div>
               </template>
-              <span v-if="currentBlog.header">{{ currentBlog.header.create_time }}</span>
+              <span v-if="auditMdListData[currentBlog.index]">{{ auditMdListData[currentBlog.index].create_time
+              }}</span>
 
             </el-descriptions-item>
             <el-descriptions-item>
@@ -47,10 +46,8 @@
                   文章标签
                 </div>
               </template>
-              <el-tag class="label-tag" size="small">School</el-tag>
-              <el-tag class="label-tag" size="small">School</el-tag>
-              <el-tag class="label-tag" size="small">School</el-tag>
-              <el-tag class="label-tag" size="small">School</el-tag>
+              <el-tag v-for="item in blogTags" :key="item.value" class="label-tag" size="small">{{ item.label }}
+              </el-tag>
             </el-descriptions-item>
             <el-descriptions-item>
               <template #label>
@@ -61,13 +58,15 @@
                   文章标题
                 </div>
               </template>
-              <span v-if="currentBlog.header">{{ currentBlog.header.title }}</span>
+              <span v-if="auditMdListData[currentBlog.index]">{{ auditMdListData[currentBlog.index].title }}</span>
             </el-descriptions-item>
           </el-descriptions>
           <div class="">
-            <mavon-editor ref="detailRef" :editable="false" defaultOpen="preview" :toolbarsFlag="false"
-              :subfield="false" class="mavon_editor" previewBackground="#fff" :boxShadow="false"
+            <mavon-editor ref="detailRef" v-if="overviewData.examine !== 0" :editable="false" defaultOpen="preview"
+              :toolbarsFlag="false" :subfield="false" class="mavon_editor" previewBackground="#fff" :boxShadow="false"
               v-model="currentBlog.body" :ishljs="true" />
+            <el-result class="empty-content" v-else icon="success" title="全部审核完毕" sub-title="辛苦你啦，年底给你加薪哦🤞">
+            </el-result>
           </div>
         </el-card>
       </el-col>
@@ -104,7 +103,7 @@
             </el-col>
           </el-row>
         </el-card>
-        <el-affix class="sidebar-btn" target=".affix-container" :offset="80">
+        <el-affix v-if="overviewData.examine !== 0" class="sidebar-btn" target=".affix-container" :offset="200">
           <div class="addfix-item audit-pass">
             <button class="addfix-btn" title="通过" @click="handleAuditPass">
               <el-icon :size="20">
@@ -121,21 +120,19 @@
               审核不通过
             </button>
           </div>
-          <div class="addfix-item audit-recheck">
-            <button class="addfix-btn" title="重新审核" @click="handleAuditReCheck">
+          <div class="">
+            <el-button title="后退" @click="handleAuditBack">
               <el-icon :size="20">
-                <RefreshLeft />
+                <ArrowLeft />
               </el-icon>
-              重新审核
-            </button>
-          </div>
-          <div class="addfix-item audit-back">
-            <button class="addfix-btn" title="返回上一个" @click="handleAuditBack">
+              上一页
+            </el-button>
+            <el-button title="前进" @click="handleAuditNext">
               <el-icon :size="20">
-                <DArrowLeft />
+                <ArrowRight />
               </el-icon>
-              返回上篇
-            </button>
+              下一页
+            </el-button>
           </div>
         </el-affix>
       </el-col>
@@ -144,11 +141,12 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, onMounted, watch } from 'vue'
-import { getBlogAuditOverviewData, getAuditMdDataList, getMdContent } from '@/request/api'
-import { ElMessage } from 'element-plus'
-import 'element-plus/es/components/message/style/css'
+import { reactive, toRefs, ref, onMounted, watch, computed, inject } from 'vue'
+import { getBlogAuditOverviewData, getAuditMdDataList, getMdContent, getTagList, updateBlogauditStatus } from '@/request/api'
 
+const auditRef = ref()
+//盖章样式
+const loaded = ref<boolean>(false)
 const state = reactive<{
   overviewData: overviewData;
   auditCheckStatus: {
@@ -158,10 +156,10 @@ const state = reactive<{
   }
   auditMdListData: MdPostObj[];
   currentBlog: {
-    id: number;
+    index: number;
     body: string;
-    header: MdPostObj
   };
+  tagList: TagListItem[];
 }>({
   overviewData: {},
   auditCheckStatus: {
@@ -171,23 +169,25 @@ const state = reactive<{
   },
   auditMdListData: [],
   currentBlog: {
-    id: -1,
+    index: -1,
     body: '',
-    header: {}
-  }
+  },
+  tagList: [],
 })
-const { overviewData, auditCheckStatus, auditMdListData, currentBlog } = toRefs(state)
+const { overviewData, auditCheckStatus, auditMdListData, currentBlog, tagList } = toRefs(state)
 
-watch(() => currentBlog.value.id, () => {
-  if (currentBlog.value.id > 0) {
-    getMdContent(currentBlog.value.id).then(res => {
-      currentBlog.value.body = res.data.body
-      currentBlog.value.header = auditMdListData.value[currentBlog.value.id]
-    }).catch(err => {
-      console.log('[catch]:', err);
-    })
+const auditStatus = {
+  'pass': {
+    status: 1,
+    content: '审核通过',
+    color: '#67C23A'
+  },
+  'nopass': {
+    status: 0,
+    content: '审核不通过',
+    color: '#F56C6C'
   }
-})
+}
 
 onMounted(() => {
   //获取概况信息
@@ -201,74 +201,118 @@ onMounted(() => {
   //获取待审核文章列表
   getAuditMdDataList().then(res => {
     if (res.code === 200) {
-      auditMdListData.value = res.data
       if (res.data.length > 0) {
-        currentBlog.value.id = res.data[0].blogid as number
-        currentBlog.value.header = res.data[0]
+        currentBlog.value.index = 0
+        auditMdListData.value = res.data
       }
+    }
+  }).catch(err => {
+    console.log('[catch]:', err);
+  })
+
+  //获取标签列表
+  getTagList().then(res => {
+    if (res.code === 200) {
+      tagList.value = res.data
     }
   }).catch(err => {
     console.log('[catch]:', err);
   })
 })
 
+//inject
+const setScrollTop = inject<(scrollTop: number) => void>('setScrollTop')
 
 
-const loaded = ref<boolean>(false)
+watch(() => currentBlog.value.index, (newIndex, oldIndex) => {
+  //回到顶部
+  if (setScrollTop) {
+    setScrollTop(0)
+  }
+  // watch 有文章时处理请求
+  if (currentBlog.value.index !== -1 && overviewData.value.examine !== 0) {
+    getMdContent(auditMdListData.value[newIndex].blogid as number).then(res => {
+      currentBlog.value.body = res.data.body
+    }).catch(err => {
+      console.log('[catch]:', err);
+    })
+  }
+  if (auditMdListData.value[newIndex].status === 1) {
+    //pass
+    auditCheckStatus.value = auditStatus.pass
+    loaded.value = true
+  } else if (auditMdListData.value[newIndex].status === 0) {
+    //pass
+    auditCheckStatus.value = auditStatus.nopass
+    loaded.value = true
+  }
+})
+
+//处理文本标签
+const blogTags = computed(() => {
+  return tagList.value.filter(e => JSON.parse(auditMdListData.value[currentBlog.value.index]?.label || '[]').includes(e.value))
+})
+
 
 //处理审核通过
 const handleAuditPass = () => {
-  if (auditCheckStatus.value.status !== 1) {
-    loaded.value = false
-    ElMessage.success('审核通过')
-    auditCheckStatus.value = {
-      status: 1,
-      content: '审核通过',
-      color: '#67C23A'
-    }
-    setTimeout(() => {
-      loaded.value = true
-    }, 300)
+  //阻止重复点击按钮
+  if (auditMdListData.value[currentBlog.value.index].status !== 1 && overviewData.value.examine !== 0) {
+    loaded.value = false //清除盖章动画
+    const id = auditMdListData.value[currentBlog.value.index].id as number;
+    const status = 1;
+    updateBlogauditStatus({ id, status }).then(res => {
+      if (res.code === 200) {
+        auditMdListData.value[currentBlog.value.index].status = status //修改文章审核状态
+        auditCheckStatus.value = auditStatus.pass // 盖章动画-通过
+        setTimeout(() => {  //延迟调用盖章动画
+          loaded.value = true
+        }, 300)
+      }
+    }).catch(err => {
+      console.log('[cathc]:', err);
+      //请求错误处理
+    })
   }
 }
 
 
 //处理审核不通过
 const handleAuditNoPass = () => {
-  if (auditCheckStatus.value.status !== 0) {
-    loaded.value = false
-    ElMessage.error('审核不通过')
-    auditCheckStatus.value = {
-      status: 0,
-      content: '审核不通过',
-      color: '#F56C6C'
-    }
-    setTimeout(() => {
-      loaded.value = true
-    }, 300)
+  //阻止重复点击按钮
+  if (auditCheckStatus.value.status !== 0 && overviewData.value.examine !== 0) {
+    loaded.value = false //清除盖章动画
+    const id = auditMdListData.value[currentBlog.value.index].id as number;
+    const status = 0;
+    updateBlogauditStatus({ id, status }).then(res => {
+      if (res.code === 200) {
+        auditMdListData.value[currentBlog.value.index].status = status //修改文章审核状态
+        auditCheckStatus.value = auditStatus.nopass // 盖章动画-不通过
+        setTimeout(() => {  //延迟调用盖章动画
+          loaded.value = true
+        }, 300)
+      }
+    }).catch(err => {
+      console.log('[cathc]:', err);
+      //请求错误处理
+    })
   }
 }
 
 
-//处理重新审核
-const handleAuditReCheck = () => {
-  if (auditCheckStatus.value.status !== -1) {
+//处理进入下一篇
+const handleAuditNext = () => {
+  if (currentBlog.value.index + 1 < auditMdListData.value.length) {
+    currentBlog.value.index += 1;
     loaded.value = false
-    ElMessage.warning('重新审查')
-    setTimeout(() => {
-      auditCheckStatus.value = {
-        status: -1,
-        content: '',
-        color: ''
-      }
-    }, 300)
-
   }
 }
 //处理返回上篇
 const handleAuditBack = () => {
-  loaded.value = false
-  ElMessage.warning('返回上篇')
+  if (currentBlog.value.index - 1 >= 0) {
+    currentBlog.value.index -= 1;
+    loaded.value = false
+  }
 }
 
 </script>
@@ -283,10 +327,7 @@ const handleAuditBack = () => {
     font-weight: 700;
   }
 
-  .empty-content {
-    width: 100%;
-    margin-top: 15%;
-  }
+
 
   .audit-content {
     z-index: 222;
@@ -303,6 +344,11 @@ const handleAuditBack = () => {
     .label-tag+.label-tag {
       margin-left: 10px;
     }
+  }
+
+  .empty-content {
+    width: 100%;
+    margin-top: 15%;
   }
 }
 
@@ -523,7 +569,7 @@ const handleAuditBack = () => {
     position: absolute;
     padding: 10px 15px;
     margin: 0 auto;
-    bottom: 5%;
+    top: 10%;
     right: 15%;
     text-transform: uppercase;
     opacity: 0;
@@ -531,10 +577,12 @@ const handleAuditBack = () => {
     transform: rotate(-15deg) scale(5);
     transition: all .3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
     z-index: 2000;
+    visibility: hidden;
   }
 }
 
 .loaded .stamp:after {
+  visibility: visible;
   opacity: .75;
   transform: rotate(-15deg) scale(1);
 }
