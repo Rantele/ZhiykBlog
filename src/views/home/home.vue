@@ -24,7 +24,6 @@
               <el-menu :default-active="$route.path" router>
                 <el-menu-item index="/">首页</el-menu-item>
                 <el-menu-item index="/blog">博客</el-menu-item>
-                <el-menu-item index="/forum">圈子</el-menu-item>
                 <el-menu-item index="/about">关于</el-menu-item>
                 <el-menu-item v-for="(item, index) in getRouteData.index" :index="'/' + item.name" :key="index">{{
                     item.title
@@ -86,7 +85,6 @@
           <el-menu :default-active="$route.path" mode="horizontal" router>
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/blog">博客</el-menu-item>
-            <el-menu-item index="/forum">圈子</el-menu-item>
             <el-menu-item index="/about">关于</el-menu-item>
             <el-menu-item v-for="(item, index) in getRouteData.index" :index="'/' + item.name" :key="index">{{
                 item.title

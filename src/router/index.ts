@@ -15,7 +15,7 @@ const modules = import.meta.glob([
   '../views/userCenter/*/*/*.vue',
 ])
 
-const whiteList = ['home', 'index', 'blog', 'forum', 'about', '404']
+const whiteList = ['home', 'index', 'blog', 'about', '404']
 
 const routes: RouteRecordRaw[] = [
   {
@@ -44,11 +44,6 @@ const routes: RouteRecordRaw[] = [
             component: () => import('../views/home/blog/searchBlog/searchBlog.vue'),
           },
         ],
-      },
-      {
-        path: 'forum',
-        name: 'forum',
-        component: () => import('../views/home/forum/forum.vue'),
       },
       {
         path: 'about',
