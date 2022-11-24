@@ -39,7 +39,10 @@
             </template>
           </el-skeleton>
         </el-tab-pane>
-        <el-tab-pane label="待审核" name="audit">
+        <el-tab-pane name="audit">
+          <template #label>
+            <span>待审核({{ auditDataList.length }})</span>
+          </template>
           <el-skeleton :loading="loading" animated>
             <template #template>
               <el-skeleton-item variant="text" style="width: 40%;margin-bottom: 12px;" />
@@ -58,7 +61,10 @@
             </template>
           </el-skeleton>
         </el-tab-pane>
-        <el-tab-pane label="未通过" name="nopass">
+        <el-tab-pane name="nopass">
+          <template #label>
+            <span>未通过({{ noPassDataList.length }})</span>
+          </template>
           <el-skeleton :loading="loading" animated>
             <template #template>
               <el-skeleton-item variant="text" style="width: 40%;margin-bottom: 12px;" />
