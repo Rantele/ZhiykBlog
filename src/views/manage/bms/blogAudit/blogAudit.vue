@@ -10,7 +10,7 @@
           </template>
           <el-descriptions class="audit-content" v-else title="审核文章" :column="3" border>
             <template #extra>
-              <el-button type="primary">操作</el-button>
+              <el-button type="primary" @click="dialogVisible = true">提交审核</el-button>
             </template>
             <el-descriptions-item>
               <template #label>
@@ -138,6 +138,17 @@
       </el-col>
     </el-row>
   </div>
+  <el-dialog v-model="dialogVisible" title="确认信息" width="30%">
+    <span>确认提交审核结果</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="modifyAudit">
+          确认
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang='ts' setup>
@@ -160,6 +171,7 @@ const state = reactive<{
     body: string;
   };
   tagList: TagListItem[];
+  dialogVisible: boolean;
 }>({
   overviewData: {},
   auditCheckStatus: {
@@ -173,8 +185,9 @@ const state = reactive<{
     body: '',
   },
   tagList: [],
+  dialogVisible: false
 })
-const { overviewData, auditCheckStatus, auditMdListData, currentBlog, tagList } = toRefs(state)
+const { overviewData, auditCheckStatus, auditMdListData, currentBlog, tagList, dialogVisible } = toRefs(state)
 
 const auditStatus = {
   'pass': {
@@ -314,6 +327,37 @@ const handleAuditBack = () => {
     loaded.value = false
   }
 }
+
+//确认提交审核结果
+const modifyAudit = async () => {
+  //获取概况信息
+  await getBlogAuditOverviewData().then(res => {
+    if (res.code === 200) {
+      overviewData.value = res.data
+    }
+  }).catch(err => {
+    console.log('[catch]:', err);
+  })
+  //获取待审核文章列表
+  await getAuditMdDataList().then(res => {
+    if (res.code === 200) {
+      if (res.data.length > 0) {
+        currentBlog.value.index = 0
+        auditMdListData.value = res.data
+      }
+    }
+  }).catch(err => {
+    console.log('[catch]:', err);
+  })
+  auditCheckStatus.value = {
+    status: -1,
+    content: '',
+    color: ''
+  }
+  loaded.value = false
+  dialogVisible.value = false
+}
+
 
 </script>
 <style lang='less' scoped>
