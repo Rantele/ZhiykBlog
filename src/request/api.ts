@@ -148,3 +148,6 @@ export const getAuditMdDataList = (): PromiseRes<MdPostObj[]> => request.get('/b
 //修改文章审核结果
 export const updateBlogauditStatus = (data: { id: number; status: number }): PromiseRes<UserLoginRes> =>
   request.post('/blog/auditStatus', data)
+
+//获取博客版本历史
+export const getBlogVersionHistory = (): PromiseRes<VersionHistoryObj[]> => request.get('/index/about/log')

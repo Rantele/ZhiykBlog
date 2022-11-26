@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 19:34:57
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-22 20:46:18
+ * @LastEditTime: 2022-11-26 20:56:04
  * @Description:axios.ts全局变量
  *
  */
@@ -136,4 +136,12 @@ interface overviewData {
   td_add?: number
   compelete_rate?: number
   pass_rate?: number
+}
+
+//博客版本
+interface VersionHistoryObj {
+  id?: number
+  type?: string
+  time?: string
+  content?: string
 }
