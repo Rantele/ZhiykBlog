@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-23 16:02:29
+ * @LastEditTime: 2022-11-27 21:57:46
  * @Description:接口统一管理
  *
  */
@@ -151,3 +151,14 @@ export const updateBlogauditStatus = (data: { id: number; status: number }): Pro
 
 //获取博客版本历史
 export const getBlogVersionHistory = (): PromiseRes<VersionHistoryObj[]> => request.get('/index/about/log')
+
+//新增博客版本历史
+export const createBlogVersionHistory = (data: VersionHistoryObj): PromiseRes<VersionHistoryObj[]> =>
+  request.post('/index/about/create', data)
+
+//修改博客版本历史
+export const updateBlogVersionHistory = (data: VersionHistoryObj): PromiseRes<VersionHistoryObj[]> =>
+  request.post('/index/about/update', data)
+
+//删除博客版本历史
+export const deleteBlogVersionHistory = (data: { id: number }): PromiseRes => request.post('/index/about/delete', data)

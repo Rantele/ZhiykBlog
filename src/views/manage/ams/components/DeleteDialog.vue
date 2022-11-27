@@ -14,8 +14,9 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref } from 'vue'
-import { deleteWSInfo } from '@/request/api'
+import { deleteBlogVersionHistory } from '@/request/api'
+
+
 const props = defineProps<{
     visible: boolean;
     data: { id: number, parentId: number }
@@ -30,12 +31,10 @@ const close = (reload?: number) => {
     emit('close', reload);
 }
 //点击确认
-const modify = () => {
-    deleteWSInfo({ id: props.data.id, parentId: props.data.parentId }).then((res) => {
+const modify = async () => {
+    await deleteBlogVersionHistory({ id: props.data.id }).then((res) => {
         close(res.code);
-        // ElMessage.warning('无法删除含有子项网站的类别')
-        //ElMessage.error('删除失败，请联系超级管理员'
-    }).catch(err => { })
+    }).catch((err) => { close() })
 }
 
 

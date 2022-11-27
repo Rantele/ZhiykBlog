@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 19:34:57
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-26 20:56:04
+ * @LastEditTime: 2022-11-27 19:33:04
  * @Description:axios.ts全局变量
  *
  */
