@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-27 21:57:46
+ * @LastEditTime: 2022-11-28 21:31:07
  * @Description:接口统一管理
  *
  */
@@ -162,3 +162,15 @@ export const updateBlogVersionHistory = (data: VersionHistoryObj): PromiseRes<Ve
 
 //删除博客版本历史
 export const deleteBlogVersionHistory = (data: { id: number }): PromiseRes => request.post('/index/about/delete', data)
+
+//获取管理员用户列表
+export const getSearchAdminList = (data: searchItf): PromiseTableRes<AdminObjItf[]> =>
+  request.get('/user/adminlist', { params: data })
+
+//获取管理员用户列表
+export const getSearchUserList = (data: searchItf): PromiseTableRes<AdminObjItf[]> =>
+  request.get('/user/list', { params: data })
+
+//获取管理员类型列表
+export const getAdminRoleList = (): PromiseRes<{ id: number; name: string; value: string }[]> =>
+  request.get('/user/rolelist')

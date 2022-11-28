@@ -2,18 +2,29 @@
  * @Author: Rantele
  * @Date: 2022-10-12 19:34:57
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-27 19:33:04
+ * @LastEditTime: 2022-11-28 21:19:11
  * @Description:axios.ts全局变量
  *
  */
 
 type PromiseRes<T = {}> = Promise<ResComItf<T>>
+type PromiseTableRes<T = {}> = Promise<ResTableItf<T>>
 
 // 返回值标准接口类型
 interface ResComItf<T> {
   code?: number
   message: string
   data: T
+}
+
+//分页数据返回接口类型
+interface ResTableItf<T> {
+  code?: number
+  message: string
+  data: T
+  page_num: number
+  page_size: number
+  total: number
 }
 
 //用户登录数据
