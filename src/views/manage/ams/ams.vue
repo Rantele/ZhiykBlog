@@ -2,7 +2,7 @@
 <template>
   <el-card class="card">
     <div class="header">
-      <span><strong>关于我们</strong></span>
+      <span><strong>版本更新信息</strong></span>
       <el-button class="button" size="small" @click="handleEdit({})">
         <IEpPlus />
       </el-button>

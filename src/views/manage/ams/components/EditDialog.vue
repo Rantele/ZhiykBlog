@@ -1,16 +1,16 @@
 <template>
     <el-dialog v-model="visible" :before-close="close" :title="title">
         <el-form ref="formRef" :model="newForm" :rules="rules" label-position="top">
-            <el-form-item label="操作类别" prop="type" required>
+            <el-form-item label="操作类别" prop="type">
                 <el-select v-model="newForm.type">
                     <el-option v-for="(item, index) in select" :label="item.name" :value="index" :key="index" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="描述信息" prop="content" required>
+            <el-form-item label="描述信息" prop="content">
                 <el-input v-model="newForm.content" autocomplete="off" maxlength="50" placeholder="请输入描述内容"
                     show-word-limit />
             </el-form-item>
-            <el-form-item label="日期" prop="time" required>
+            <el-form-item label="日期" prop="time">
                 <el-date-picker v-model="newForm.time" type="date" placeholder="请选择日期" value-format="YYYY-MM-DD" />
             </el-form-item>
         </el-form>
@@ -55,9 +55,9 @@ watch(() => props.form, () => {
     newForm.value = { ...props.form };
     let titleRes = '';
     if (Object.keys(newForm.value).length === 0) {
-        titleRes = '修改'
-    } else {
         titleRes = '添加'
+    } else {
+        titleRes = '编辑'
     }
     title.value = titleRes + '信息'
 })
