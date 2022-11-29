@@ -1,10 +1,13 @@
 <!--  -->
 <template>
   <div>
-    <el-card>
-      <template #header>
-        管理员信息
-      </template>
+    <el-card class="card">
+      <div class="header">
+        <span><strong>管理员权限</strong></span>
+        <el-button class="button" size="small" @click="editAdmin({})">
+          <IEpPlus />
+        </el-button>
+      </div>
       <el-table :data="tableData" height="380" style="width: 100%;">
         <el-table-column prop="id" label="编号" />
         <el-table-column prop="nickname" label="昵称" />
@@ -15,8 +18,12 @@
             {{ formateDate(scope.row.create_time) }}
           </template>
         </el-table-column>
-        <el-table-column prop="roles" label="权限" />
-        <el-table-column label="操作">
+        <el-table-column label="权限">
+          <template #default="scope">
+            <el-tag v-for="(item, index) in handleRoels(scope.row.roles)" :key="item + index">{{ item }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right">
           <template #default="{ row }">
             <!-- <el-button type="primary" link @click="allocRole(row.id)">分配角色</el-button> -->
             <el-button type="primary" link @click="editAdmin(row)">编辑</el-button>
@@ -27,18 +34,15 @@
         :page-size="paginationData.page_size" :page-sizes="[10, 20, 50, 100]" :current-page="paginationData.page_num"
         @size-change="adminSizeChange" @current-change="adminCurrPageChange" />
     </el-card>
-    <el-select v-model="value" multiple placeholder="Select" style="width: 240px">
-      <el-option v-for="item in roleList" :key="item.value" :label="item.name" :value="item.value" />
-    </el-select>
   </div>
 
 
-  <EditAdmin :visible="visible" @close="closeDialog" :form="rowData" />
-  <EditRole :visible="roleVisible" @colse="closeRoleDialog" :form="roleData" />
+  <EditAdmin :visible="visible" @close="closeDialog" :form="rowData" :selectList="roleList" />
+  <!-- <EditRole :visible="roleVisible" @colse="closeRoleDialog" :form="roleData" /> -->
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, onMounted } from 'vue'
+import { reactive, toRefs, ref, onMounted, computed } from 'vue'
 import { getSearchAdminList, getAdminRoleList } from "@/request/api"
 import EditAdmin from './components/EditAdmin.vue'
 import EditRole from './components/EditRole.vue';
@@ -104,6 +108,20 @@ onMounted(() => {
   })
 })
 
+//处理权限显示
+const handleRoels = computed(() => (role: string) => {
+  const userRoleList = role.split(',') //转成列表
+  const isSuperAdmin = roleList.value.every((val) => userRoleList.includes(val.value))
+  if (isSuperAdmin) {
+    //超级管理员
+    return ['超级管理员']
+  } else {
+    console.log(roleList.value);
+    const filterRes = roleList.value.filter(e => userRoleList.includes(e.value)).map(e => e.name)
+    return filterRes
+  }
+})
+
 //监听管理员表切换分页
 const adminCurrPageChange = (current_page: number) => {
   paginationData.value.page_num = current_page
@@ -117,6 +135,7 @@ const adminSizeChange = (page_size: number) => {
   paginationData.value.page_num = 1
   fetchData();
 }
+
 
 //获取所有角色
 // getRoleListAll().then(res => {
@@ -151,13 +170,25 @@ const editAdmin = (row: AdminObjItf) => {
   rowData.value = row
 }
 //隐藏弹窗
-const closeDialog = (reload?: string) => {
+const closeDialog = (reload: any) => {
   visible.value = false;
   rowData.value = {}; //清空用户编辑弹框内容
 
-  if (reload === 'reload') {
-    //更新表格数据
-    fetchData();
+  if (!isNaN(reload)) {
+    if (reload === 200) {
+      // fetchData();
+      //更新表格数据
+      // getBlogVersionHistory().then(res => {
+      //   if (res.code === 200) {
+      //     versionHistory.value = res.data
+      //     ElMessage.success('操作成功')
+      //   }
+      // }).catch(err => {
+      //   console.log('[catch]:', err);
+      // })
+    } else {
+      // ElMessage.error('操作失败，请联系超级管理员')
+    }
   }
 }
 
@@ -175,8 +206,32 @@ function formateDate(time: string) {
 }
 </script>
 <style lang='less' scoped>
-:deep(.el-card__body) {
-  padding: 0 20px;
-  // margin: 0 20px;
+.card {
+  margin: 18px 0;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    margin-bottom: 14px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+}
+
+.handle-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 6px;
+  column-gap: 6px;
+
+  .el-button {
+    margin-left: 0 !important;
+  }
 }
 </style>
