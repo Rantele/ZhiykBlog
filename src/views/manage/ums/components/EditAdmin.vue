@@ -32,8 +32,7 @@
 <script lang='ts' setup>
 import { reactive, toRefs, ref, watch, computed, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
-
-// import { updateAdmin } from '@/request/api'
+import { updateAdmin, isExistEmail } from '@/request/api'
 
 const formRef = ref<FormInstance>()
 
@@ -60,11 +59,29 @@ const state = reactive<{
 
 const { formLabelWidth, newForm, roles, title } = toRefs(state);
 
+
+const validateEmail = async (rule: unknown, value: string | undefined, callback: (msg?: string) => void) => {
+    await isExistEmail({ id: newForm.value.id as number, email: newForm.value.email as string }).then(res => {
+        if (res.code === 200) {
+            if (!value) {
+                return callback('邮箱不能为空！')
+            } if (res.data) {
+                return callback('该邮箱已被使用！')
+            } else {
+                callback()
+            }
+        }
+    }).catch(err => {
+        console.log('[catch]:', err);
+        callback('接口异常错误')
+    })
+
+}
 //校验规则
 const rules = reactive({
     nickname: [{ required: true, message: '昵称不能为空', trigger: 'blur' }],
     realname: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-    email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }],
+    email: [{ required: true, validator: validateEmail, trigger: 'blur' }],
 })
 
 
@@ -164,14 +181,13 @@ const modifyAdmin = async () => {
             //将权限重新赋值
             let roles_list: string[] = ['0']
             roles_list.push(...roles.value)
-            console.log([...new Set(roles_list)].join(','));
-
             newForm.value.roles = [...new Set(roles_list)].join(',') //去重
-            console.log(newForm.value);
-
-            // updateBlogVersionHistory(newForm.value).then(res => {
-            //     close(res.code)
-            // }).catch((err) => { close() })
+            updateAdmin(newForm.value).then(res => {
+                close(res.code)
+            }).catch(err => {
+                console.log('[catch]:', err);
+                close()
+            })
         }
     })
 

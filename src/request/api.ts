@@ -2,7 +2,7 @@
  * @Author: Rantele
  * @Date: 2022-10-12 18:59:39
  * @LastEditors: Rantele
- * @LastEditTime: 2022-11-29 18:08:19
+ * @LastEditTime: 2022-11-30 19:37:12
  * @Description:接口统一管理
  *
  */
@@ -165,12 +165,19 @@ export const deleteBlogVersionHistory = (data: { id: number }): PromiseRes => re
 
 //获取管理员用户列表
 export const getSearchAdminList = (data: searchItf): PromiseTableRes<AdminObjItf[]> =>
-  request.get('/user/adminlist', { params: data })
+  request.get('/user/ums/admin/list', { params: data })
 
-//获取管理员用户列表
+//获取用户列表
 export const getSearchUserList = (data: searchItf): PromiseTableRes<AdminObjItf[]> =>
-  request.get('/user/list', { params: data })
+  request.get('/user/ums/user/list', { params: data })
 
 //获取管理员类型列表
 export const getAdminRoleList = (): PromiseRes<{ id: number; name: string; value: string }[]> =>
-  request.get('/user/rolelist')
+  request.get('/user/ums/admin/rolelist')
+
+//获取邮箱是否存在
+export const isExistEmail = (data: { id: number; email: string }): PromiseRes<boolean> =>
+  request.get('/user/isExistEmail', { params: data })
+
+//修改管理员信息
+export const updateAdmin = (data: AdminObjItf): PromiseRes => request.post('/user/ums/admin/update', data)

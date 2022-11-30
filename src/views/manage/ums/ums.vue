@@ -42,7 +42,7 @@
 </template>
 
 <script lang='ts' setup>
-import { reactive, toRefs, ref, onMounted, computed } from 'vue'
+import { reactive, toRefs, ref, onMounted, computed, watch } from 'vue'
 import { getSearchAdminList, getAdminRoleList } from "@/request/api"
 import EditAdmin from './components/EditAdmin.vue'
 import EditRole from './components/EditRole.vue';
@@ -82,19 +82,24 @@ const state = reactive<{
   roleList: []
 })
 
+
 const { tableData, visible, rowData, roleVisible, roleData, paginationData, roleList } = toRefs(state)
+
 //获取用户数据列表
-const fetchData = () => {
-  getSearchAdminList({
+const fetchData = async () => {
+  await getSearchAdminList({
     search: '',
     page_num: paginationData.value.page_num,
     page_size: paginationData.value.page_size
   }).then(res => {
     if (res.code === 200) {
+      console.log(res.data);
+
       tableData.value = res.data
       paginationData.value.total = res.total
     }
   })
+
 }
 fetchData();
 
@@ -116,7 +121,6 @@ const handleRoels = computed(() => (role: string) => {
     //超级管理员
     return ['超级管理员']
   } else {
-    console.log(roleList.value);
     const filterRes = roleList.value.filter(e => userRoleList.includes(e.value)).map(e => e.name)
     return filterRes
   }
@@ -125,12 +129,10 @@ const handleRoels = computed(() => (role: string) => {
 //监听管理员表切换分页
 const adminCurrPageChange = (current_page: number) => {
   paginationData.value.page_num = current_page
-  console.log('curr page');
   fetchData();
 }
 //监听管理员表切换每页显示数据
 const adminSizeChange = (page_size: number) => {
-  console.log('page_size');
   paginationData.value.page_size = page_size
   paginationData.value.page_num = 1
   fetchData();
@@ -176,18 +178,7 @@ const closeDialog = (reload: any) => {
 
   if (!isNaN(reload)) {
     if (reload === 200) {
-      // fetchData();
-      //更新表格数据
-      // getBlogVersionHistory().then(res => {
-      //   if (res.code === 200) {
-      //     versionHistory.value = res.data
-      //     ElMessage.success('操作成功')
-      //   }
-      // }).catch(err => {
-      //   console.log('[catch]:', err);
-      // })
-    } else {
-      // ElMessage.error('操作失败，请联系超级管理员')
+      fetchData()
     }
   }
 }

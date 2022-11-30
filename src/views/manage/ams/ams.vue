@@ -84,7 +84,7 @@ const state = reactive<{
 })
 const { versionHistory, tableKey, editDialogvisible, deleteDialogVisible, typeList, editRowData, deleteRowData } = toRefs(state)
 
-onMounted(() => {
+const fetchData = () => {
   getBlogVersionHistory().then(res => {
     if (res.code === 200) {
       versionHistory.value = res.data
@@ -92,7 +92,10 @@ onMounted(() => {
   }).catch(err => {
     console.log('[catch]:', err);
   })
-})
+}
+
+fetchData()
+
 
 const handleEdit = (row: WebsitesObj) => {
   editDialogvisible.value = true;
@@ -112,14 +115,7 @@ const closeDeleteDialog = (reload: any) => {
   if (!isNaN(reload)) {
     if (reload === 200) {
       //更新表格数据
-      getBlogVersionHistory().then(res => {
-        if (res.code === 200) {
-          versionHistory.value = res.data
-          ElMessage.success('删除成功')
-        }
-      }).catch(err => {
-        console.log('[catch]:', err);
-      })
+      fetchData()
     } else {
       ElMessage.error('删除失败，请联系超级管理员')
     }
@@ -134,14 +130,7 @@ const closeEditDialog = (reload: any) => {
   if (!isNaN(reload)) {
     if (reload === 200) {
       //更新表格数据
-      getBlogVersionHistory().then(res => {
-        if (res.code === 200) {
-          versionHistory.value = res.data
-          ElMessage.success('操作成功')
-        }
-      }).catch(err => {
-        console.log('[catch]:', err);
-      })
+      fetchData()
     } else {
       ElMessage.error('操作失败，请联系超级管理员')
     }

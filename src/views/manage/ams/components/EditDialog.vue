@@ -29,7 +29,6 @@ import { FormInstance } from 'element-plus'
 import { createBlogVersionHistory, updateBlogVersionHistory } from '@/request/api'
 
 const formRef = ref<FormInstance>()
-
 const props = defineProps<{
     visible: boolean;
     form: VersionHistoryObj;
