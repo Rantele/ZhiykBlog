@@ -3,12 +3,12 @@
   <div class="blog_container">
     <div class="main">
       <el-row :gutter="24" justify="center">
-        <el-col :md="18" :xl="20" :sm="22" :xs="22">
+        <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="18">
           <el-card class="blog_list" v-infinite-scroll="handleScroll">
             <router-view></router-view>
           </el-card>
         </el-col>
-        <el-col :md="6" class="hidden-sm-and-down">
+        <el-col :md="6" :lg="6" :xl="6" class="hidden-sm-and-down">
           <el-affix position="top" :offset="70">
             <el-card class="sidebar">
               <header>

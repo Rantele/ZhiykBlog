@@ -21,7 +21,7 @@
         <template #websiteTitle>{{ card.title }}</template>
         <template #websiteContent>
           <el-row :gutter="24">
-            <el-col v-for="item in card.children" :key="item.id" :xs="24" :sm="12" :md="8" :lg="6" :xl="4"
+            <el-col v-for="item in card.children" :key="item.id" :xs="24" :sm="12" :md="8" :lg="6" :xl="6"
               style="margin-bottom:20px">
               <a :href="item.link" style="display: block;text-decoration: none;color:#409EFF;">
                 <el-card>
